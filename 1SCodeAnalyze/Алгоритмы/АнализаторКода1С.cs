@@ -56,12 +56,12 @@ namespace _1SCodeAnalyze
         /// <summary>
         /// Функция производит поиск запросов в вызываемых методах текста
         /// </summary>
-        /// <param name="Текст"></param>
-        /// <param name="МодульОбъекта"></param>
-        /// <param name="Index"></param>
-        /// <param name="СвойствоМетода"></param>
-        /// <param name="ВызывающийМетод"></param>
-        /// <returns></returns>
+        /// <param name="Текст">Текст процедуры</param>
+        /// <param name="МодульОбъекта">Весь файл</param>
+        /// <param name="Index">точка входа в процедуру </param>
+        /// <param name="СвойствоМетода">Свойства вызываемых процедур</param>
+        /// <param name="ВызывающийМетод">защита от рекурсий</param>
+        /// <returns>Истина/Ложь</returns>
         private Boolean РекурсивныйПоискЗапроса(String Текст, Модуль МодульОбъекта, int Index,  СвойстваМетодов СвойствоМетода, String ВызывающийМетод, int Глубина)
         {
             ТелоКода Тело = new ТелоКода(Текст, Index);

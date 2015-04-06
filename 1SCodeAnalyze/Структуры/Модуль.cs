@@ -64,7 +64,7 @@ namespace _1SCodeAnalyze.Структуры
 
 
         public int ПолучитьНомерСтрокиПоИндексу(int Index) {
-            return new Regex(@"^").Matches(Текст.Substring(0, Index)).Count;
+            return new Regex(@"\n", RegexOptions.Multiline).Matches(Текст.Substring(0, Index)).Count;
 
             //return Текст.Substring(0, Index).   Split(new char[] { '\n' }, StringSplitOptions.None).                Count();
         }

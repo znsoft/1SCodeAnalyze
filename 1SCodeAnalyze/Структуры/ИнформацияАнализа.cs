@@ -44,7 +44,10 @@ namespace _1SCodeAnalyze
 			СтекВызовов.Add(value);
 		}
 
-
+        /// <summary>
+        /// Получает строковое представление стека вызовов метода в виде Метод1()->Метод2()
+        /// </summary>
+        /// <returns></returns>
 		public string ПолучитьСтекСтрокой ()
 		{
 			String s = "";

@@ -17,7 +17,6 @@ namespace _1SCodeAnalyze.Структуры
         int inIndex;
         private Boolean АнализПрямогоЗапросаПроведен;
         private Boolean ЗапросЕсть;
-        private int Index;
         private ИнформацияАнализа Анализ;
 
         public ТелоКода(String Текст,  Модуль МодульОбъекта,     int inIndex) {
@@ -30,11 +29,12 @@ namespace _1SCodeAnalyze.Структуры
 
         private ИнформацияАнализа ПрямойЗапрос()
         {
-            var ПоискЗапроса = new Regex(@"^(?!\/\/)[^\/]*?\.(выполнить|найтипокоду|найтипореквизиту|найтипонаименованию)[\s]?\(", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            var ПоискЗапроса = new Regex(@"^[^\/]*?\.(выполнить|найтипокоду|найтипореквизиту|найтипонаименованию)[\s]?\(.+$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
             Match Найдены = ПоискЗапроса.Match(Текст);
             if (!Найдены.Success)
                 return null;
-            return new ИнформацияАнализа(Найдены.Index + inIndex, Найдены.Groups[1].Value, Найдены.Groups[1].Value);
+            return new ИнформацияАнализа(Найдены.Index + inIndex, " " + (Текст.Length > 120 ? Текст.Substring(Найдены.Index > 50 ? Найдены.Index - 50 : 0, 120) : Найдены.Value) , Найдены.Groups[1].Value);
+            //    		Найдены.Value	"Пока В  Цикл\r\n\tыборка = Запрос.Выполнить().Выбрать();\r"	            return new ИнформацияАнализа(Найдены.Groups[1].Index + inIndex, "Запрос ... " + Текст.Substring(Найдены.Index, 60) + Найдены.Groups[1].Value, Найдены.Groups[1].Value);
         }
 
         public ТелоКода ПровестиАнализ()
@@ -58,6 +58,10 @@ namespace _1SCodeAnalyze.Структуры
             return ЗапросЕсть;
         }
 
-
+        public MatchCollection НайтиВызовы()
+        {
+            var ПоискВызовов = new Regex(@"^(?!\/\/)[^\.\/]*?([а-яa-z0-9_]*?)[\s]?\(", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            return ПоискВызовов.Matches(Текст);
+        }
     }
 }

@@ -33,9 +33,7 @@ namespace _1SCodeAnalyze.Структуры
 
         public Модуль ДобавитьПроблему(String Проблема, int Index)
         {
-            ТаблицаАнализа.Add(new ИнформацияАнализа(Index, Проблема, Проблема));
-            ЕстьОшибки = true;
-            return this;
+            return ДобавитьПроблему(new ИнформацияАнализа(Index, Проблема, Проблема));
         }
 
 		public Модуль ДобавитьМетод(String ИмяМетода, СвойстваМетодов Свойства)
@@ -53,6 +51,7 @@ namespace _1SCodeAnalyze.Структуры
 		{
 			ТаблицаАнализа.Add(Проблема);
 			ЕстьОшибки = true;
+            //Console.WriteLine(Проблема.ОписаниеПроблемы);
 			return this;
 		}
 
@@ -60,6 +59,14 @@ namespace _1SCodeAnalyze.Структуры
         {
             var Str = file.OpenText();
             return Str.ReadToEnd();
+        }
+
+
+
+        public int ПолучитьНомерСтрокиПоИндексу(int Index) {
+            return new Regex(@"^").Matches(Текст.Substring(0, Index)).Count;
+
+            //return Текст.Substring(0, Index).   Split(new char[] { '\n' }, StringSplitOptions.None).                Count();
         }
 
 

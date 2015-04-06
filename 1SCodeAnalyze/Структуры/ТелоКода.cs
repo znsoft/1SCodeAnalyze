@@ -13,17 +13,15 @@ namespace _1SCodeAnalyze.Структуры
     class ТелоКода
     {
         String Текст;
-        Модуль МодульОбъекта;
         int inIndex;
         private Boolean АнализПрямогоЗапросаПроведен;
         private Boolean ЗапросЕсть;
         private ИнформацияАнализа Анализ;
 
-        public ТелоКода(String Текст,  Модуль МодульОбъекта,     int inIndex) {
+        public ТелоКода(String Текст,  int inIndex) {
             ЗапросЕсть = false;
             this.inIndex = inIndex;
             this.Текст = Текст;
-            this.МодульОбъекта = МодульОбъекта;
             АнализПрямогоЗапросаПроведен = false;
         }
 
@@ -33,7 +31,9 @@ namespace _1SCodeAnalyze.Структуры
             Match Найдены = ПоискЗапроса.Match(Текст);
             if (!Найдены.Success)
                 return null;
-            return new ИнформацияАнализа(Найдены.Index + inIndex, " " + (Текст.Length > 20 ? Текст.Substring(0, 20) : "") + "\n...\n" + Найдены.Value, Найдены.Groups[1].Value);
+			String КусокКода = " " + (Текст.Length > 20 ? Текст.Substring(0, 20).Trim() : "") + "\n...\n" + Найдены.Value.Trim();
+			if(Найдены.Index < 20)КусокКода = (Текст.Length > 40 ? Текст.Substring(0, 40).Trim() : Найдены.Value.Trim());
+			return new ИнформацияАнализа(Найдены.Index + inIndex, КусокКода, Найдены.Groups[1].Value);
         }
 
         public ТелоКода ПровестиАнализ()
@@ -59,7 +59,7 @@ namespace _1SCodeAnalyze.Структуры
 
         public MatchCollection НайтиВызовы()
         {
-            var ПоискВызовов = new Regex(@"^(?!\/\/)[^\.\/]*?([а-яa-z0-9_]*?)[\s]?\(", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            var ПоискВызовов = new Regex(@"^[^\.\/\n]*?([а-яa-z0-9_]*?)[\s]?\(", RegexOptions.IgnoreCase | RegexOptions.Multiline);
             return ПоискВызовов.Matches(Текст);
         }
     }

@@ -20,15 +20,12 @@ namespace _1SCodeAnalyze.Структуры
         public List<ИнформацияАнализа> ТаблицаАнализа;
         public String Текст;
         public Boolean ЕстьОшибки;
-		public static Dictionary<String, СвойстваМетодов> МетодыМодуля;
-
         public Модуль(FileInfo file)
         {
             this.file = file;
             Текст = СчитатьСодержимоеФайла(file);
             ЕстьОшибки = false;
             ТаблицаАнализа = new List<ИнформацияАнализа>();
-			МетодыМодуля = new Dictionary<String, СвойстваМетодов>();
         }
 
         public Модуль ДобавитьПроблему(String Проблема, int Index)
@@ -36,14 +33,6 @@ namespace _1SCodeAnalyze.Структуры
             return ДобавитьПроблему(new ИнформацияАнализа(Index, Проблема, Проблема));
         }
 
-		public Модуль ДобавитьМетод(String ИмяМетода, СвойстваМетодов Свойства)
-        {
-			if (!МетодыМодуля.ContainsKey(ИмяМетода))
-			{
-				МетодыМодуля.Add(ИмяМетода, Свойства);
-			}
-			return this;
-        }
 
 
 
@@ -51,7 +40,7 @@ namespace _1SCodeAnalyze.Структуры
 		{
 			ТаблицаАнализа.Add(Проблема);
 			ЕстьОшибки = true;
-            //Console.WriteLine(Проблема.ОписаниеПроблемы);
+            Console.WriteLine("строка " + ПолучитьНомерСтрокиПоИндексу(Проблема.Смещение) + ": \n" + Проблема.ОписаниеПроблемы + "\n");
 			return this;
 		}
 

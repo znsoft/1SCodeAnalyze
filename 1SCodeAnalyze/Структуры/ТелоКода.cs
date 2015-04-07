@@ -27,7 +27,7 @@ namespace _1SCodeAnalyze.Структуры
 
         private ИнформацияАнализа ПрямойЗапрос()
         {
-            var ПоискЗапроса = new Regex(@"^[^\/\n]*?\.(выполнить|найтипокоду|найтипореквизиту|найтипонаименованию)[\s]?\([^\n]*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            var ПоискЗапроса = new Regex(@"^[^\/\n]*?\.(выполнить|найтипокоду|найтипореквизиту|найтипонаименованию|FindByCode|FindByDescription|FindByAttribute|Execute)[\s]?\([^\n]*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
             Match Найдены = ПоискЗапроса.Match(Текст);
             if (!Найдены.Success)
                 return null;

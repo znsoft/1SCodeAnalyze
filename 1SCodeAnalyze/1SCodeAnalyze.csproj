@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -50,9 +52,44 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Алгоритмы\АнализаторКода1С.cs" />
+    <Compile Include="Внешние\core\BinaryDataDocument.cs" />
+    <Compile Include="Внешние\core\DCSSchemaDocument.cs" />
+    <Compile Include="Внешние\core\FWOpenableDocument.cs" />
+    <Compile Include="Внешние\core\HTMLDocument.cs" />
+    <Compile Include="Внешние\core\HTMLTemplate.cs" />
+    <Compile Include="Внешние\core\ImageArray.cs" />
+    <Compile Include="Внешние\core\IMDPropertyProvider.cs" />
+    <Compile Include="Внешние\core\IMDTreeItem.cs" />
+    <Compile Include="Внешние\core\MDBaseObject.cs" />
+    <Compile Include="Внешние\core\MDClasses.cs" />
+    <Compile Include="Внешние\core\MDConstants.cs" />
+    <Compile Include="Внешние\core\MDDataProcessor.cs" />
+    <Compile Include="Внешние\core\MDDataProcessor.Factory.cs" />
+    <Compile Include="Внешние\core\MDFileItem.cs" />
+    <Compile Include="Внешние\core\MDForm.cs" />
+    <Compile Include="Внешние\core\MDManagedForm.cs" />
+    <Compile Include="Внешние\core\MDObjectsCollection.cs" />
+    <Compile Include="Внешние\core\MDOrdinaryForm.cs" />
+    <Compile Include="Внешние\core\MDReader.cs" />
+    <Compile Include="Внешние\core\MDReport.cs" />
+    <Compile Include="Внешние\core\MDTemplate.cs" />
+    <Compile Include="Внешние\core\MDUserDialogBase.cs" />
+    <Compile Include="Внешние\core\PersistedTemplateStub.cs" />
+    <Compile Include="Внешние\core\SerializedItem.cs" />
+    <Compile Include="Внешние\core\SerializedList.cs" />
+    <Compile Include="Внешние\core\StaticTreeNode.cs" />
+    <Compile Include="Внешние\core\TemplateDocument.cs" />
+    <Compile Include="Внешние\core\UICommands.cs" />
+    <Compile Include="Внешние\core\V8MetadataContainer.cs" />
+    <Compile Include="Внешние\core\V8ModuleProcessor.cs" />
+    <Compile Include="Внешние\core\V8Types.cs" />
+    <Compile Include="Внешние\Утилиты\V8File.cs" />
     <Compile Include="Структуры\ИнформацияАнализа.cs" />
     <Compile Include="Структуры\Модуль.cs" />
     <Compile Include="Структуры\ТелоКода.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Внешние\core\TemplateClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="tests\" />

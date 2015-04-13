@@ -10,8 +10,10 @@
 - неявных запросов
 - неоптимальных запросов
 
-*Разработка ведется в:*
+*Разработка ведется в средах:*
 
  - Visual studio
  - SharpDevelop
  - MonoDevelop
+
+предварительная версия была написана в 1С https://github.com/znsoft/external1CProgs/tree/master/src/СтатическийАнализКода1с

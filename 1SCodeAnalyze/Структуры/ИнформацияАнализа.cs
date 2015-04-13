@@ -55,5 +55,10 @@ namespace _1SCodeAnalyze
 			if(String.IsNullOrEmpty(s)&&ЕстьЗапрос)s = "Запрос()";
 			return s;
 		}
-	}
+
+        internal void УдалитьВызов(string p)
+        {
+            СтекВызовов.Remove(p);
+        }
+    }
 }

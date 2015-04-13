@@ -39,9 +39,10 @@ namespace _1SCodeAnalyze
 			СтекВызовов = new List<string>();
 		}
 
-		public void ДобавитьВызов (string value)
+        public СвойстваМетодов ДобавитьВызов(string value)
 		{
 			СтекВызовов.Add(value);
+            return this;
 		}
 
         /// <summary>
@@ -56,9 +57,10 @@ namespace _1SCodeAnalyze
 			return s;
 		}
 
-        internal void УдалитьВызов(string p)
+        internal СвойстваМетодов УдалитьВызов(string p)
         {
             СтекВызовов.Remove(p);
+            return this;
         }
     }
 }

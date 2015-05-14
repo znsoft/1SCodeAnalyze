@@ -35,9 +35,6 @@ namespace _1SCodeAnalyze.Структуры
             return ДобавитьПроблему(new ИнформацияАнализа(Index, Проблема, Проблема));
         }
 
-
-
-
 		public Модуль ДобавитьПроблему(ИнформацияАнализа Проблема)
 		{
 
@@ -52,8 +49,6 @@ namespace _1SCodeAnalyze.Структуры
             var Str = file.OpenText();
             return Str.ReadToEnd();
         }
-
-
 
         public int ПолучитьНомерСтрокиПоИндексу(int Index) {
             return new Regex(@"\n", RegexOptions.Multiline).Matches(Текст.Substring(0, Index)).Count;

@@ -24,6 +24,13 @@ namespace _1SCodeAnalyze
 
         private void ОбойтиВсеФайлы()
         {
+            ПолучитьВсеМодулиИзФайлов();
+            Console.WriteLine("Будет проанализировано "+Модули.Count.ToString()+" текстов Модулей");
+            ПроанализироватьВсеМодули();
+        }
+
+        private void ПолучитьВсеМодулиИзФайлов()
+        {
             foreach (FileInfo Файл in files)
             {
                 String ИмяМодуля = Файл.Name.Replace(".Модуль.txt", "").Replace(".txt", "");
@@ -33,22 +40,26 @@ namespace _1SCodeAnalyze
                     Модули.Add(ИмяМодуля, МодульОбъекта);
                 }
             }
-            Console.WriteLine("Будет проанализировано "+Модули.Count.ToString()+" текстов Модулей");
-			//foreach (KeyValuePair<String, Модуль> Объект in Модули)НайтиВсеФункцииИПроцедуры(Объект.Value);
+        }
+
+        private void ПроанализироватьВсеМодули()
+        {
+            //foreach (KeyValuePair<String, Модуль> Объект in Модули)НайтиВсеФункцииИПроцедуры(Объект.Value);
             int КоличествоМодулей = Модули.Count;
-			foreach (KeyValuePair<String, Модуль> Объект in Модули){
+            foreach (KeyValuePair<String, Модуль> Объект in Модули)
+            {
                 АнализироватьЦиклы(Объект.Value);
                 if (Объект.Value.ЕстьОшибки)
                 {
-                    Console.Write((int)(100 - ((float)КоличествоМодулей / (float)Модули.Count)*100.0f));
-                    Console.WriteLine("%  " + Объект.Key );
+                    Console.Write((int)(100 - ((float)КоличествоМодулей / (float)Модули.Count) * 100.0f));
+                    Console.WriteLine("%  " + Объект.Key);
                     foreach (var T in Объект.Value.ТаблицаАнализа)
                     {
-						Console.WriteLine("строка "+Объект.Value.ПолучитьНомерСтрокиПоИндексу(T.Смещение) + ": \n" + T.ОписаниеПроблемы+ "\n");
+                        Console.WriteLine("строка " + Объект.Value.ПолучитьНомерСтрокиПоИндексу(T.Смещение) + ": \n" + T.ОписаниеПроблемы + "\n");
                     }
                 }
                 КоличествоМодулей--;
-			}
+            }
         }
 
 		#region Методы поиска процедур и функций 
@@ -99,7 +110,7 @@ namespace _1SCodeAnalyze
             foreach (Match Вызов in Найдены)
             {
 				if(ВызывающийМетод.ToUpper().Contains(Вызов.Groups[1].Value.ToUpper()))continue;//self call //рекурсия
-				var ПоискМетода = new Regex(@"(Процедур|Функци|procedur|functio)[аяne][\s]*?" + ЭкранироватьРег(Вызов.Groups[1].Value) + @"[\s]*?\(([\S\s]*?)(Конец|end)\1[ыиen]", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+				var ПоискМетода = new Regex(@"(Процедур|Функци|procedur|functio)[аяne][\s]*?" + Regex.Escape(Вызов.Groups[1].Value) + @"[\s]*?\(([\S\s]*?)(Конец|end)\1[ыиen]", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                 Match Найден = ПоискМетода.Match(МодульОбъекта.Текст);
                 if (!Найден.Success)
                     continue;
@@ -125,17 +136,6 @@ namespace _1SCodeAnalyze
                 }
             }
             return false;
-        }
-        /// <summary>
-        /// Фунция экранирует символы для нормальной подстановки в регулярное выражение
-        /// </summary>
-        /// <param name="s">Исходная строка</param>
-        /// <returns>Результирующая строка</returns>
-        private string ЭкранироватьРег(string s)
-        {
-            string p = s;
-            foreach (char c in @"\|.+*(){}^$[]?/".ToCharArray())p = p.Replace("" + c, @"\" + c);
-            return p.Replace(" ", @"[\s]*?");
         }
 
 		/// <summary>

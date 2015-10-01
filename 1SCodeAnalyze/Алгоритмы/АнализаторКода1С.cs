@@ -28,7 +28,7 @@ namespace _1SCodeAnalyze
         private void ОбойтиВсеФайлы()
         {
             ПолучитьВсеМодулиИзФайлов();
-            Console.WriteLine("Будет проанализировано "+Модули.Count.ToString()+" текстов Модулей");
+//            Console.WriteLine("Будет проанализировано "+Модули.Count.ToString()+" текстов Модулей");
             ПроанализироватьВсеМодули();
         }
 
@@ -50,6 +50,7 @@ namespace _1SCodeAnalyze
         {
             //foreach (KeyValuePair<String, Модуль> Объект in Модули)НайтиВсеФункцииИПроцедуры(Объект.Value);
             int КоличествоМодулей = Модули.Count;
+           // foreach (KeyValuePair<String, Модуль> Объект in Модули)       {            }            
             foreach (KeyValuePair<String, Модуль> Объект in Модули)
             {
                 

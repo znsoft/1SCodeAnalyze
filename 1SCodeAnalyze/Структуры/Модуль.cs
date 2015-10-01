@@ -20,13 +20,18 @@ namespace _1SCodeAnalyze.Структуры
         public List<ИнформацияАнализа> ТаблицаАнализа;
         public String Текст;
         public Boolean ЕстьОшибки;
+        public Dictionary<String, СвойстваМетодов> СловарьМетодов;
+
         public Модуль(FileInfo file)
         {
             this.file = file;
             Текст = СчитатьСодержимоеФайла(file);
             ЕстьОшибки = false;
             ТаблицаАнализа = new List<ИнформацияАнализа>();
+            СловарьМетодов = new Dictionary<String, СвойстваМетодов>();
+            НайтиВсеФункцииИПроцедуры();
         }
+
 
         public Модуль ДобавитьПроблему(String Проблема, int Index)
         {
@@ -56,6 +61,38 @@ namespace _1SCodeAnalyze.Структуры
             //return Текст.Substring(0, Index).   Split(new char[] { '\n' }, StringSplitOptions.None).                Count();
         }
 
+        public Модуль ДобавитьМетод(СвойстваМетодов Метод) {
+            СловарьМетодов.Add(Метод.ИмяМетода, Метод);
+            return this;
+        }
+
+        public void ПосчитатьВнутренниеВызовыМетодов(){
+            foreach (var Метод in СловарьМетодов) { 
+            //Метод.Метод.Key
+            
+            }
+        }
+
+        /// <summary>
+        /// Метод производит поиск всех всех функции И процедур.
+        /// отмечая их свойства: с запросом и стек вызовов
+        /// </summary>
+        /// <param name="МодульОбъекта">Модуль объекта.</param>
+        private void НайтиВсеФункцииИПроцедуры()
+        {
+            var ПоискФункций = new Regex(@"^(?!\/\/)[^\.\/]*?(procedur|functio|Процедур|Функци)[enая][\s]*?([А-Яа-яa-z0-9_]*?)[\s]?\(([\S\s]*?)\)[\s]*?(экспорт|export)?([\S\s]*?)(Конец|End)\1[enыи]", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            MatchCollection Найдены = ПоискФункций.Matches(Текст);
+            foreach (Match Функция in Найдены)
+            {
+                СвойстваМетодов СвойствоМетода = new СвойстваМетодов(Функция);
+                СвойствоМетода.НомерСтроки = ПолучитьНомерСтрокиПоИндексу(Функция.Index);
+                ДобавитьМетод(СвойствоМетода);
+
+            }
+        }
+
 
     }
+
+
 }

@@ -13,13 +13,26 @@ namespace _1SCodeAnalyze
 
         Dictionary<String, Модуль> Модули;
         List<FileInfo> files;
+        StreamWriter sw_fileReport;
 
         public АнализаторКода1С(List<FileInfo> files)
         {
             this.files = files;
             Модули = new Dictionary<string, Модуль>();
-            ОбойтиВсеФайлы();
+            //добавил создание файла отчета, потому что в консоли неудобно читать логи на больших конфах
+            string fileNameReport = Directory.GetCurrentDirectory() + "\\report_" + DateTime.Now.ToString().Replace(".", "").Replace(":", "").Replace(" ", "") + ".txt";
+            FileInfo file = new FileInfo(fileNameReport);
 
+            sw_fileReport = File.CreateText(fileNameReport);
+            ОбойтиВсеФайлы();
+            sw_fileReport.Close();
+
+        }
+
+        public void AddLog(string message)
+        {
+            Console.WriteLine(message);
+            sw_fileReport.WriteLine(message);
         }
 
         private void ОбойтиВсеФайлы()
@@ -33,25 +46,29 @@ namespace _1SCodeAnalyze
                     Модули.Add(ИмяМодуля, МодульОбъекта);
                 }
             }
-            Console.WriteLine("Будет проанализировано "+Модули.Count.ToString()+" текстов Модулей");
-			//foreach (KeyValuePair<String, Модуль> Объект in Модули)НайтиВсеФункцииИПроцедуры(Объект.Value);
+            AddLog("Будет проанализировано " + Модули.Count.ToString() + " текстов Модулей");
+            //foreach (KeyValuePair<String, Модуль> Объект in Модули)НайтиВсеФункцииИПроцедуры(Объект.Value);
             int КоличествоМодулей = Модули.Count;
-			foreach (KeyValuePair<String, Модуль> Объект in Модули){
+            foreach (KeyValuePair<String, Модуль> Объект in Модули)
+            {
                 АнализироватьЦиклы(Объект.Value);
                 if (Объект.Value.ЕстьОшибки)
                 {
-                    Console.Write((int)(100 - ((float)КоличествоМодулей / (float)Модули.Count)*100.0f));
-                    Console.WriteLine("%  " + Объект.Key );
+                    string tmp = ((int)(100 - ((float)КоличествоМодулей / (float)Модули.Count) * 100.0f)).ToString();
+                    tmp = tmp + "%  " + Объект.Key + Environment.NewLine;
+                    AddLog(tmp);
                     foreach (var T in Объект.Value.ТаблицаАнализа)
                     {
-						Console.WriteLine("строка "+Объект.Value.ПолучитьНомерСтрокиПоИндексу(T.Смещение) + ": \n" + T.ОписаниеПроблемы+ "\n");
+                        tmp = "строка " + Объект.Value.ПолучитьНомерСтрокиПоИндексу(T.Смещение) + ": \n" + T.ОписаниеПроблемы + "\n";
+                        Console.WriteLine(tmp);
+                        AddLog(tmp);
                     }
                 }
                 КоличествоМодулей--;
-			}
+            }
         }
 
-		#region Методы поиска процедур и функций 
+        #region Методы поиска процедур и функций
 
         /// <summary>
         /// Функция производит поиск запросов в вызываемых методах текста
@@ -62,10 +79,11 @@ namespace _1SCodeAnalyze
         /// <param name="СвойствоМетода">Свойства вызываемых процедур</param>
         /// <param name="ВызывающийМетод">защита от рекурсий</param>
         /// <returns>Истина/Ложь</returns>
-        private Boolean РекурсивныйПоискЗапроса(String Текст, Модуль МодульОбъекта, int Index,  СвойстваМетодов СвойствоМетода, String ВызывающийМетод, int Глубина)
+        private Boolean РекурсивныйПоискЗапроса(String Текст, Модуль МодульОбъекта, int Index, СвойстваМетодов СвойствоМетода, String ВызывающийМетод, int Глубина)
         {
-            if (Глубина > 20) {
-                String СтекСтрокой = СвойствоМетода.ПолучитьСтекСтрокой() ;
+            if (Глубина > 20)
+            {
+                String СтекСтрокой = СвойствоМетода.ПолучитьСтекСтрокой();
                 String КусокКода = "Запутаная рекурсия в  " + МодульОбъекта.file.Name + " Методе " + ВызывающийМетод + " -> " + СтекСтрокой + "\nМетод вызывает цепочку методов которые снова вызывают этот же метод, возможно переполнение стека";
 
                 ИнформацияАнализа Анализ = new ИнформацияАнализа(Index, КусокКода, СтекСтрокой);
@@ -74,7 +92,8 @@ namespace _1SCodeAnalyze
                 return false;
             }
             ТелоКода Тело = new ТелоКода(Текст, Index);
-			if (Тело.ЕстьЗапрос()) {
+            if (Тело.ЕстьЗапрос())
+            {
                 СвойствоМетода.ЕстьЗапрос = true;
                 if (Глубина == 0)
                 {
@@ -89,8 +108,8 @@ namespace _1SCodeAnalyze
             MatchCollection Найдены = Тело.НайтиВызовы();
             foreach (Match Вызов in Найдены)
             {
-				if(ВызывающийМетод.ToUpper().Contains(Вызов.Groups[1].Value.ToUpper()))continue;//self call //рекурсия
-				var ПоискМетода = new Regex(@"(Процедур|Функци|procedur|functio)[аяne][\s]*?" + ЭкранироватьРег(Вызов.Groups[1].Value) + @"[\s]*?\(([\S\s]*?)(Конец|end)\1[ыиen]", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                if (ВызывающийМетод.ToUpper().Contains(Вызов.Groups[1].Value.ToUpper())) continue;//self call //рекурсия
+                var ПоискМетода = new Regex(@"(Процедур|Функци|procedur|functio)[аяne][\s]*?" + ЭкранироватьРег(Вызов.Groups[1].Value) + @"[\s]*?\(([\S\s]*?)(Конец|end)\1[ыиen]", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                 Match Найден = ПоискМетода.Match(МодульОбъекта.Текст);
                 if (!Найден.Success)
                     continue;
@@ -99,7 +118,7 @@ namespace _1SCodeAnalyze
                 if (РекурсивныйПоискЗапроса(Найден.Groups[2].Value, МодульОбъекта, Найден.Index, СвойствоМетода, Вызов.Groups[1].Value, Глубина + 1))
                 {
                     СвойствоМетода.ЕстьЗапрос = true;
-                    
+
                     if (Глубина == 0)
                     {
                         String СтекСтрокой = СвойствоМетода.ПолучитьСтекСтрокой() + "Запрос()";
@@ -111,7 +130,8 @@ namespace _1SCodeAnalyze
                     }
                     return true;
                 }
-                else {
+                else
+                {
                     СвойствоМетода.УдалитьВызов(Вызов.Groups[1].Value);
                 }
             }
@@ -125,36 +145,36 @@ namespace _1SCodeAnalyze
         private string ЭкранироватьРег(string s)
         {
             string p = s;
-            foreach (char c in @"\|.+*(){}^$[]?/".ToCharArray())p = p.Replace("" + c, @"\" + c);
+            foreach (char c in @"\|.+*(){}^$[]?/".ToCharArray()) p = p.Replace("" + c, @"\" + c);
             return p.Replace(" ", @"[\s]*?");
         }
 
-		/// <summary>
-		/// Метод производит поиск всех всех функции И процедур.
-		/// отмечая их свойства: с запросом и стек вызовов
-		/// </summary>
-		/// <param name="МодульОбъекта">Модуль объекта.</param>
-		private void НайтиВсеФункцииИПроцедуры(Модуль МодульОбъекта)
+        /// <summary>
+        /// Метод производит поиск всех всех функции И процедур.
+        /// отмечая их свойства: с запросом и стек вызовов
+        /// </summary>
+        /// <param name="МодульОбъекта">Модуль объекта.</param>
+        private void НайтиВсеФункцииИПроцедуры(Модуль МодульОбъекта)
         {
             var ПоискФункций = new Regex(@"^(?!\/\/)[^\.\/]*?(procedur|functio|Процедур|Функци)[enая][\s]*?([А-Яа-яa-z0-9_]*?)[\s]?\(([\S\s]*?)(Конец|End)\1[enыи]", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-			MatchCollection Найдены = ПоискФункций.Matches(МодульОбъекта.Текст);
+            MatchCollection Найдены = ПоискФункций.Matches(МодульОбъекта.Текст);
             foreach (Match Функция in Найдены)
             {
-				СвойстваМетодов СвойствоМетода = new СвойстваМетодов();
-				СвойствоМетода.ЕстьЗапрос = РекурсивныйПоискЗапроса(Функция.Groups[3].Value, МодульОбъекта, Функция.Index, СвойствоМетода, Функция.Groups[2].Value , 1);
-				СвойствоМетода.Index = Функция.Index;
-				//МодульОбъекта.ДобавитьМетод(Функция.Groups[2].Value, СвойствоМетода);
+                СвойстваМетодов СвойствоМетода = new СвойстваМетодов();
+                СвойствоМетода.ЕстьЗапрос = РекурсивныйПоискЗапроса(Функция.Groups[3].Value, МодульОбъекта, Функция.Index, СвойствоМетода, Функция.Groups[2].Value, 1);
+                СвойствоМетода.Index = Функция.Index;
+                //МодульОбъекта.ДобавитьМетод(Функция.Groups[2].Value, СвойствоМетода);
             }
         }
-		#endregion
+        #endregion
 
-		public void АнализироватьЦиклы(Модуль МодульОбъекта)
+        public void АнализироватьЦиклы(Модуль МодульОбъекта)
         {
 
             var ПоискФункций = new Regex(@"(Для|Пока|for|while).+(Цикл|do)[\S\s]*?(КонецЦикла|endfor|enddo)", RegexOptions.IgnoreCase | RegexOptions.Multiline); //(Для|Пока).+ нужен иначе выражение находит ....Цикла;   код код код для цикл   КонецЦикла;
             //  необходимо переработать это выражение т.к если попадаются вложенные циклы то обрабатываются неверно
             MatchCollection Найдены = ПоискФункций.Matches(МодульОбъекта.Текст);
-            foreach (Match Функция in Найдены)           
+            foreach (Match Функция in Найдены)
                 РекурсивныйПоискЗапроса(Функция.Value, МодульОбъекта, Функция.Index, new СвойстваМетодов(), "", 0);
         }
     }

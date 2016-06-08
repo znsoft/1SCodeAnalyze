@@ -16,14 +16,28 @@ namespace _1SCodeAnalyze
 
         Dictionary<String, Модуль> Модули;
         List<FileInfo> files;
+		StreamWriter sw_fileReport;
+
 
         public АнализаторКода1С(List<FileInfo> files)
         {
             this.files = files;
             Модули = new Dictionary<string, Модуль>();
-            ОбойтиВсеФайлы();
+			string fileNameReport = Directory.GetCurrentDirectory() + "\\report_" + DateTime.Now.ToString().Replace(".", "").Replace(":", "").Replace(" ", "") + ".txt";
+			FileInfo file = new FileInfo(fileNameReport);
+			
+			sw_fileReport = File.CreateText(fileNameReport);
+			ОбойтиВсеФайлы();
+			sw_fileReport.Close();
 
         }
+
+		public void AddLog(string message)
+		{
+			Console.WriteLine(message);
+			sw_fileReport.WriteLine(message);
+		}
+
 
         private void ОбойтиВсеФайлы()
         {
@@ -57,11 +71,10 @@ namespace _1SCodeAnalyze
                 АнализироватьЦиклы(Объект.Value);
                 if (Объект.Value.ЕстьОшибки)
                 {
-                    Console.Write((int)(100 - ((float)КоличествоМодулей / (float)Модули.Count) * 100.0f));
-                    Console.WriteLine("%  " + Объект.Key);
+					AddLog(((int)(100 - ((float)КоличествоМодулей / (float)Модули.Count) * 100.0f)).ToString()+"%  " + Объект.Key);
                     foreach (var T in Объект.Value.ТаблицаАнализа)
                     {
-                        Console.WriteLine("строка " + Объект.Value.ПолучитьНомерСтрокиПоИндексу(T.Смещение) + ": \n" + T.ОписаниеПроблемы + "\n");
+						AddLog("строка " + Объект.Value.ПолучитьНомерСтрокиПоИндексу(T.Смещение) + ": \n" + T.ОписаниеПроблемы + "\n");
                     }
                 }
                 КоличествоМодулей--;

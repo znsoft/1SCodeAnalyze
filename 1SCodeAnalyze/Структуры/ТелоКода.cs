@@ -14,9 +14,18 @@ namespace _1SCodeAnalyze.Структуры
     {
         String Текст;
         int inIndex;
+        //private int КоличествоСтрок;
         private Boolean АнализПрямогоЗапросаПроведен;
         private Boolean ЗапросЕсть;
         private ИнформацияАнализа Анализ;
+        public int КоличествоСтрок
+        {
+            get
+            {
+                return new Regex(@"\n", RegexOptions.Multiline).Matches(Текст).Count; 
+            }
+            
+        }
 
         public ТелоКода(String Текст,  int inIndex) {
             ЗапросЕсть = false;
@@ -24,6 +33,7 @@ namespace _1SCodeAnalyze.Структуры
             this.Текст = Текст;
             АнализПрямогоЗапросаПроведен = false;
         }
+
 
         private ИнформацияАнализа ПрямойЗапрос()
         {

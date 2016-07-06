@@ -46,6 +46,12 @@ namespace _1SCodeAnalyze.Структуры
 			return new ИнформацияАнализа(Найдены.Index + inIndex, КусокКода, Найдены.Groups[1].Value);
         }
 
+		private ИнформацияАнализа ВызовыПоЦепочке(){
+
+
+		}
+
+
         public ТелоКода ПровестиАнализ()
         {
             if (АнализПрямогоЗапросаПроведен) return this;

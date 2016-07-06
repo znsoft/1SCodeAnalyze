@@ -42,16 +42,12 @@ namespace _1SCodeAnalyze.Структуры
         {
             СтекВызовов = new List<string>();
             ВызываемыеМетоды = new Dictionary<String, int>();
-            Index = Функция.Index;
-            ИмяМетода = Функция.Groups[2].Value;
+			this.Index = Функция.Index;
+            this.ИмяМетода = Функция.Groups[2].Value;
             Экспорт = !String.IsNullOrEmpty(Функция.Groups[4].Value);
-            Экспортный = Экспорт;
-
-
-
-
+			this.Экспортный = Экспорт;
             ТелоМетода = (new ТелоКода(Функция.Groups[5].Value, Index)).ПровестиАнализ();
-            ЕстьЗапрос = ТелоМетода.ЕстьЗапрос();
+			this.ЕстьЗапрос = ТелоМетода.ЕстьЗапрос();
             ПосчитатьВнутренниеВызовыМетодов();
 
         }

@@ -21,6 +21,8 @@ namespace _1SCodeAnalyze.Структуры
         public String Текст;
         public Boolean ЕстьОшибки;
         public Dictionary<String, СвойстваМетодов> СловарьМетодов;
+        int всегоСтрок;
+		int строкКомментарии;
 
         public Модуль(FileInfo file)
         {
@@ -29,7 +31,9 @@ namespace _1SCodeAnalyze.Структуры
             ЕстьОшибки = false;
             ТаблицаАнализа = new List<ИнформацияАнализа>();
             СловарьМетодов = new Dictionary<String, СвойстваМетодов>();
-            НайтиВсеФункцииИПроцедуры();
+			if (!КоманднаяСтрока.isAnalyzeCode)
+				return;
+			НайтиВсеФункцииИПроцедуры();
 
             foreach (var Метод in СловарьМетодов) {
                 if (Метод.Key.Substring(0, 1) == Метод.Key.Substring(0, 1).ToLower()) ДобавитьПроблему("Имя процедуры или функции начинается с маленькой буквы "+Метод.Key, Метод.Value.Index);
@@ -61,7 +65,9 @@ namespace _1SCodeAnalyze.Структуры
         }
 
         public int ПолучитьНомерСтрокиПоИндексу(int Index) {
-            return new Regex(@"\n", RegexOptions.Multiline).Matches(Текст.Substring(0, Index)).Count;
+			if(Index == -1) return new Regex(@"\n", RegexOptions.Multiline).Matches(Текст).Count;
+
+			return new Regex(@"\n", RegexOptions.Multiline).Matches(Текст.Substring(0, Index)).Count;
 
             //return Текст.Substring(0, Index).   Split(new char[] { '\n' }, StringSplitOptions.None).                Count();
         }

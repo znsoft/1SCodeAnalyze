@@ -17,6 +17,8 @@ namespace _1SCodeAnalyze
         Dictionary<String, Модуль> Модули;
         List<FileInfo> files;
 		StreamWriter sw_fileReport;
+		int всегоСтрок = 0;
+		int строкКомментарии;
 
 
         public АнализаторКода1С(List<FileInfo> files)
@@ -43,15 +45,24 @@ namespace _1SCodeAnalyze
         {
             ПолучитьВсеМодулиИзФайлов();
 //            Console.WriteLine("Будет проанализировано "+Модули.Count.ToString()+" текстов Модулей");
-            ПроанализироватьВсеМодули();
+			AddLog("Всего строк в проекте " + всегоСтрок.ToString() + "\n");
+			if (!КоманднаяСтрока.isAnalyzeCode)
+				return;
+			ПроанализироватьВсеМодули();
         }
 
         private void ПолучитьВсеМодулиИзФайлов()
         {
             foreach (FileInfo Файл in files)
             {
+
+
                 String ИмяМодуля = Файл.Name.Replace(".Модуль.txt", "").Replace(".txt", "");
                 Модуль МодульОбъекта = new Модуль(Файл);
+				if(МодульОбъекта.ЕстьОшибки)System.Console.Write("x"); else System.Console.Write(".");
+                всегоСтрок += МодульОбъекта.ПолучитьНомерСтрокиПоИндексу(-1);
+				if (!КоманднаяСтрока.isAnalyzeCode)
+					continue;
                 if (!Модули.ContainsKey(ИмяМодуля))
                 {
                     Модули.Add(ИмяМодуля, МодульОбъекта);
@@ -64,6 +75,7 @@ namespace _1SCodeAnalyze
         {
             //foreach (KeyValuePair<String, Модуль> Объект in Модули)НайтиВсеФункцииИПроцедуры(Объект.Value);
             int КоличествоМодулей = Модули.Count;
+
            // foreach (KeyValuePair<String, Модуль> Объект in Модули)       {            }            
             foreach (KeyValuePair<String, Модуль> Объект in Модули)
             {
@@ -74,7 +86,7 @@ namespace _1SCodeAnalyze
 					AddLog(((int)(100 - ((float)КоличествоМодулей / (float)Модули.Count) * 100.0f)).ToString()+"%  " + Объект.Key);
                     foreach (var T in Объект.Value.ТаблицаАнализа)
                     {
-						AddLog("строка " + Объект.Value.ПолучитьНомерСтрокиПоИндексу(T.Смещение) + ": \n" + T.ОписаниеПроблемы + "\n");
+						AddLog(Объект.Key+".строка " + Объект.Value.ПолучитьНомерСтрокиПоИндексу(T.Смещение) + ": \n" + T.ОписаниеПроблемы + "\n");
                     }
                 }
                 КоличествоМодулей--;

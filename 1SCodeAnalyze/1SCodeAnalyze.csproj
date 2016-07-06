@@ -62,6 +62,7 @@
     <Compile Include="Структуры\Модуль.cs" />
     <Compile Include="Структуры\СвойстваМетодов.cs" />
     <Compile Include="Структуры\ТелоКода.cs" />
+    <Compile Include="Алгоритмы\КоманднаяСтрока.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="tests\" />

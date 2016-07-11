@@ -19,11 +19,13 @@ namespace _1SCodeAnalyze
 		StreamWriter sw_fileReport;
 		int всегоСтрок = 0;
 		int строкКомментарии;
+        ConsoleSpiner spin;
 
 
         public АнализаторКода1С(List<FileInfo> files)
         {
             this.files = files;
+            spin = new ConsoleSpiner();
             Модули = new Dictionary<string, Модуль>();
 			string fileNameReport = Directory.GetCurrentDirectory() + "\\report_" + DateTime.Now.ToString().Replace(".", "").Replace(":", "").Replace(" ", "") + ".txt";
 			FileInfo file = new FileInfo(fileNameReport);
@@ -31,6 +33,7 @@ namespace _1SCodeAnalyze
 			sw_fileReport = File.CreateText(fileNameReport);
 			ОбойтиВсеФайлы();
 			sw_fileReport.Close();
+            
 
         }
 
@@ -108,6 +111,13 @@ namespace _1SCodeAnalyze
         /// <returns>Истина/Ложь</returns>
         private Boolean РекурсивныйПоискЗапроса(String Текст, Модуль МодульОбъекта, int Index,  СвойстваМетодов СвойствоМетода, String ВызывающийМетод, int Глубина)
         {
+            int i = Console.CursorTop;
+            Console.Write("                                                                                                                                                 ");
+            Console.SetCursorPosition(1, i);
+            Console.Write("    ");
+            Console.Write(ВызывающийМетод);
+            Console.SetCursorPosition( 1, i);
+            spin.Turn();
             String СтекСтрокой = СвойствоМетода.ПолучитьСтекСтрокой();
             if (СтекСтрокой.Length > 100) СтекСтрокой = СтекСтрокой.Substring(0, 100) + "... ";
 
@@ -138,6 +148,11 @@ namespace _1SCodeAnalyze
                     return true;
                 }
             }
+			if (КоманднаяСтрока.isSearchChainCalls) {
+				var цепочныйВызов = Тело.ВызовыПоЦепочке ();
+				if (цепочныйВызов != null)
+					МодульОбъекта.ДобавитьПроблему (цепочныйВызов);
+			}
             //Ищем другие вызываемые процедуры
             MatchCollection Найдены = Тело.НайтиВызовы();
             foreach (Match Вызов in Найдены)
@@ -200,5 +215,38 @@ namespace _1SCodeAnalyze
                 РекурсивныйПоискЗапроса(Функция.Value, МодульОбъекта, Функция.Index, new СвойстваМетодов(), "", 0);
         }
     }
+
+
+ //   static void Main(string[] args)
+  //  {
+   //     ConsoleSpiner spin = new ConsoleSpiner();
+    //    Console.Write("Working....");
+     //   while (true)
+      //  {
+      //      spin.Turn();
+       // }
+   // }
+
+    public class ConsoleSpiner
+    {
+        int counter;
+        public ConsoleSpiner()
+        {
+            counter = 0;
+        }
+        public void Turn()
+        {
+            counter++;
+            switch (counter % 4)
+            {
+                case 0: Console.Write("/"); break;
+                case 1: Console.Write("-"); break;
+                case 2: Console.Write("\\"); break;
+                case 3: Console.Write("|"); break;
+            }
+            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+        }
+    }
+
 }
 

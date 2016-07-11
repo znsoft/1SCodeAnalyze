@@ -16,8 +16,9 @@ namespace _1SCodeAnalyze.Структуры
         int inIndex;
         //private int КоличествоСтрок;
         private Boolean АнализПрямогоЗапросаПроведен;
-        private Boolean ЗапросЕсть;
-        private ИнформацияАнализа Анализ;
+		private Boolean АнализВызоваПоЦепочкеПроведен;
+		private Boolean ЗапросЕсть;
+		private ИнформацияАнализа Анализ;
         public int КоличествоСтрок
         {
             get
@@ -46,7 +47,14 @@ namespace _1SCodeAnalyze.Структуры
 			return new ИнформацияАнализа(Найдены.Index + inIndex, КусокКода, Найдены.Groups[1].Value);
         }
 
-		private ИнформацияАнализа ВызовыПоЦепочке(){
+		public ИнформацияАнализа ВызовыПоЦепочке(){
+			var ВызовыЧерезТочку = new Regex(@"^[^\/\n]*?\.[a-zа-я0-9\[\]_]*?\.[a-zа-я0-9\[\]_]*?\.[a-zа-я0-9\[\]_]*?\.[a-zа-я0-9\[\]_]*?\.?[^;]*", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+			Match Найдены = ВызовыЧерезТочку.Match(Текст);
+			if (!Найдены.Success)
+				return null;
+			String КусокКода = " Вызов по цепочке: " + (Текст.Length > 20 ? Текст.Substring(0, 20).Trim() : "") + "\n...\n" + Найдены.Value.Trim();
+			if(Найдены.Index < 20)КусокКода = (Текст.Length > 40 ? Текст.Substring(0, 40).Trim() : Найдены.Value.Trim());
+			return new ИнформацияАнализа(Найдены.Index + inIndex, КусокКода, Найдены.Groups[1].Value);
 
 
 		}

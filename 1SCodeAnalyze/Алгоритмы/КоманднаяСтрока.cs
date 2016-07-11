@@ -21,6 +21,7 @@ namespace _1SCodeAnalyze
 		public static bool isAnalyzeCode = true;
 		public static bool isCreateLogFile = true;
 		public static bool isCountStrings = true;
+		public static bool isSearchChainCalls = false;
 		public static string ext1 = "";
 		public static String ИмяПапки;
 
@@ -33,7 +34,7 @@ namespace _1SCodeAnalyze
 		void AnalyzeCmdString (string[] args)
 		{
 			if (args.Count () == 0) {
-				System.Console.WriteLine ("cmd keys: -e ext, -noanal");
+				System.Console.WriteLine ("cmd keys: -e ext, -noanal, -chaincall");
 				return;
 			}
 			string ключ = args[0];
@@ -47,7 +48,11 @@ namespace _1SCodeAnalyze
 			case "-noanal":
 				isAnalyzeCode = false;
 				break;
-				
+
+			case "-chaincall":
+				isAnalyzeCode = false;
+				break;
+
 			case "":
 
 				break;

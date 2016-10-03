@@ -43,7 +43,7 @@ namespace _1SCodeAnalyze.Структуры
             СтекВызовов = new List<string>();
             ВызываемыеМетоды = new Dictionary<String, int>();
 			this.Index = Функция.Index;
-            this.ИмяМетода = Функция.Groups[2].Value;
+            this.ИмяМетода = Функция.Groups[2].Value.ToUpper();
             Экспорт = !String.IsNullOrEmpty(Функция.Groups[4].Value);
 			this.Экспортный = Экспорт;
             ТелоМетода = (new ТелоКода(Функция.Groups[5].Value, Index)).ПровестиАнализ();
@@ -57,6 +57,7 @@ namespace _1SCodeAnalyze.Структуры
             СтекВызовов.Add(value);
             return this;
         }
+
 
         void ПосчитатьВнутренниеВызовыМетодов(){
            MatchCollection Найдены = ТелоМетода.НайтиВызовы();
